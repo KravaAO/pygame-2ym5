@@ -14,11 +14,36 @@ class GameSprite(sprite.Sprite):
         window.blit(self.image, (self.rect.x, self.rect.y))
 
 
+class Player(GameSprite):
+    def update(self):
+        keys = key.get_pressed()
+        if keys[K_LEFT] and self.rect.x > 0:
+            self.rect.x -= self.speed
+        if keys[K_RIGHT] and self.rect.x < 700 - 80:
+            self.rect.x += self.speed
+
+
+class Enemy(GameSprite):
+    direction = False
+
+    def update(self):
+        if not self.direction:
+            self.rect.x -= self.speed
+        else:
+            self.rect.x += self.speed
+
+        if self.rect.x <= 470:
+            self.direction = True
+        if self.rect.x > 700 - 80:
+            self.direction = False
+
+
+
 win_width = 700
 win_height = 500
 
-player = GameSprite("hero.png", 5, win_height - 80, 4)
-enemy = GameSprite("cyborg.png", win_width - 80, 280, 2)
+player = Player("hero.png", 5, win_height - 80, 4)
+enemy = Enemy("cyborg.png", win_width - 80, 280, 2)
 final = GameSprite("treasure.png", win_width - 120, win_height - 80, 0)
 
 window = display.set_mode((win_width, win_height))
@@ -38,9 +63,15 @@ while game:
     for e in event.get():
         if e.type == QUIT:
             game = False
-        window.blit(background, (0, 0))
-        player.reset()
-        enemy.reset()
-        final.reset()
-        display.update()
-        clock.tick(FPS)
+
+    window.blit(background, (0, 0))
+
+    player.reset()
+    enemy.reset()
+    final.reset()
+
+    player.update()
+    enemy.update()
+
+    display.update()
+    clock.tick(FPS)
