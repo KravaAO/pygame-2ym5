@@ -1,1 +1,1 @@
-# Catch-up
+# Maze game

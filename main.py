@@ -1,45 +1,46 @@
-import pygame
+from pygame import *
 
-pygame.init()
 
-WIDTH = 700
-HEIGHT = 500
+class GameSprite(sprite.Sprite):
+    def __init__(self, img, x, y, speed):
+        super().__init__()
+        self.image = transform.scale(image.load(img), (65, 65))
+        self.speed = speed
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
-window = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption('Catch up')
-clock = pygame.time.Clock()
+    def reset(self):
+        window.blit(self.image, (self.rect.x, self.rect.y))
 
-bg = pygame.image.load('background.png')
-bg = pygame.transform.scale(bg, (700, 500))
-sprite1 = pygame.transform.scale(pygame.image.load('hero.png'), (50, 50))
-sprite2 = pygame.transform.scale(pygame.image.load('cyborg.png'), (50, 50))
 
-x_h = 50
-y_h = 350
-x_c = 400
+win_width = 700
+win_height = 500
+
+player = GameSprite("hero.png", 5, win_height - 80, 4)
+enemy = GameSprite("cyborg.png", win_width - 80, 280, 2)
+final = GameSprite("treasure.png", win_width - 120, win_height - 80, 0)
+
+window = display.set_mode((win_width, win_height))
+
+display.set_caption("Maze")
+background = transform.scale(image.load("background.jpg"), (win_width, win_height))
 
 game = True
+clock = time.Clock()
+FPS = 60
+
+mixer.init()
+mixer.music.load("jungles.ogg")
+mixer.music.play()
+
 while game:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+    for e in event.get():
+        if e.type == QUIT:
             game = False
-
-    kyes = pygame.key.get_pressed()
-    if kyes[pygame.K_RIGHT] and x_h < WIDTH - 50:
-        x_h += 5
-    elif kyes[pygame.K_LEFT] and x_h > 5:
-        x_h -= 5
-    # elif kyes[pygame.K_UP] and y_h > 0: # пересування гравця у гору
-    #    y_h -= 5
-
-    if kyes[pygame.K_a]:
-        x_c -= 5
-    elif kyes[pygame.K_d]:
-        x_c += 5
-
-    window.blit(bg, (0, 0))
-    window.blit(sprite1, (x_h, y_h))
-    window.blit(sprite2, (x_c, 350))
-    pygame.display.update()
-    clock.tick(60)
-pygame.quit()
+        window.blit(background, (0, 0))
+        player.reset()
+        enemy.reset()
+        final.reset()
+        display.update()
+        clock.tick(FPS)
