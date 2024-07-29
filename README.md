@@ -1,4 +1,4 @@
-![img.png](..%2FDesktop%2Fimg.png)
+![img.png](img%2Fimg.png)
 
 # Catch up
 
@@ -20,41 +20,34 @@ pygame.init()
 Спочатку ми імпортуємо бібліотеку Pygame і ініціалізуємо її. Це потрібно для того, щоб ми могли використовувати всі функції цієї бібліотеки.
 
 # Встановлення розмірів вікна
-
->WIDTH = 700
-> 
->HEIGHT = 500
-
->window = pygame.display.set_mode((WIDTH, HEIGHT))
-> 
->pygame.display.set_caption('Catch up')
-> 
->clock = pygame.time.Clock()
-
+````
+WIDTH = 700
+HEIGHT = 500
+window = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption('Catch up')
+clock = pygame.time.Clock()
+````
 Тут ми визначаємо розміри вікна гри - 700 пікселів завширшки і 500 пікселів заввишки. Потім створюємо вікно гри і встановлюємо його заголовок на "Catch up". Об'єкт clock допомагає контролювати швидкість гри.
 
 # Завантаження зображень
-
->bg = pygame.image.load('background.png')
-> 
->bg = pygame.transform.scale(bg, (700, 500))
-> 
->sprite1 = pygame.transform.scale(pygame.image.load('hero.png'), (50, 50))
-> 
->sprite2 = pygame.transform.scale(pygame.image.load('cyborg.png'), (50, 50))
-
+````
+bg = pygame.image.load('background.png')
+bg = pygame.transform.scale(bg, (700, 500))
+sprite1 = pygame.transform.scale(pygame.image.load('hero.png'), (50, 50))
+sprite2 = pygame.transform.scale(pygame.image.load('cyborg.png'), (50, 50))
+````
 Ми завантажуємо фонове зображення та два спрайти (графічні зображення) для наших персонажів. Потім змінюємо їх розміри відповідно до розмірів вікна та потрібних розмірів персонажів.
 
 # Початкові координати персонажів
->x_h = 50
-> 
->y_h = 350
-> 
->x_c = 400
-
+````
+x_h = 50 
+y_h = 350
+x_c = 400
+````
 Ці змінні визначають початкове розташування наших персонажів. x_h і y_h - координати героя, а x_c - координата кіборга.
 
 # Головний цикл гри
+````
 game = True
 while game:
     for event in pygame.event.get():
@@ -78,6 +71,7 @@ while game:
     pygame.display.update()
     clock.tick(60)
 pygame.quit()
+````
 Це основний цикл гри, який продовжується поки змінна game дорівнює True.
 
 Ми перевіряємо всі події, що відбуваються, і якщо гравець закриває вікно гри, змінюємо game на False, щоб завершити гру.
