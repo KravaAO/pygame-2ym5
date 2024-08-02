@@ -21,6 +21,10 @@ class Player(GameSprite):
             self.rect.x -= self.speed
         if keys[K_RIGHT] and self.rect.x < 700 - 80:
             self.rect.x += self.speed
+        if keys[K_UP] and self.rect.y >= 0:
+            self.rect.y -= self.speed
+        if keys[K_DOWN] and self.rect.y <= 440:
+            self.rect.y += self.speed
 
 
 class Enemy(GameSprite):
