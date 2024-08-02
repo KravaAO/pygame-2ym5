@@ -42,6 +42,26 @@ class Enemy(GameSprite):
             self.direction = False
 
 
+class Wall(sprite.Sprite):
+    def __init__(self, color_1, color_2, color_3, x, y, width, height):
+        super().__init__()
+        self.color_1 = color_1
+        self.color_2 = color_2
+        self.color_3 = color_3
+        self.width = width
+        self.height = height
+
+        self.surf = Surface((self.width, self.height))
+        self.surf.fill((color_1, color_2, color_3))
+        self.rect = self.surf.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def draw_wall(self):
+        window.blit(self.surf, (self.rect.x, self.rect.y))
+
+w1 = Wall(0, 255, 0, 450, 90, 10, 500)
+w2 = Wall(0, 255, 0, 380, 90, 70, 10)
 
 win_width = 700
 win_height = 500
@@ -63,19 +83,40 @@ mixer.init()
 mixer.music.load("jungles.ogg")
 mixer.music.play()
 
+font.init()
+font = font.Font(None, 70)
+win = font.render('U WIN!', True, (250, 215, 0))
+lose = font.render('U lose', True, (250, 0, 0))
+
+finish = False
+
 while game:
     for e in event.get():
         if e.type == QUIT:
             game = False
 
     window.blit(background, (0, 0))
+    if not finish:
+        player.reset()
+        enemy.reset()
+        final.reset()
+        w1.draw_wall()
+        w2.draw_wall()
+        player.update()
+        enemy.update()
 
-    player.reset()
-    enemy.reset()
-    final.reset()
+    if sprite.collide_rect(player, final):
+        finish = True
+        window.blit(win, (250, 250))
 
-    player.update()
-    enemy.update()
+    if sprite.collide_rect(player, enemy):
+        finish = True
+        window.blit(lose, (250, 250))
+
+    if sprite.collide_rect(player, w1) or sprite.collide_rect(player, w2):
+        finish = True
+        window.blit(lose, (250, 250))
+
 
     display.update()
     clock.tick(FPS)
