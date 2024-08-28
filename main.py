@@ -15,7 +15,7 @@ pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play()
 pygame.font.init()
 font = pygame.font.Font(None, 36)
-
+fire_sound = pygame.mixer.Sound('fire.ogg')
 score = 0
 lost = 0
 
@@ -41,6 +41,10 @@ class Player(GameSprite):
         if keys[pygame.K_d] and self.rect.x <= 620:
             self.rect.x += self.speed
 
+    def fire(self):
+        bullet = Bullet('bullet.png', self.rect.centerx, self.rect.top, 15, 20, -15)
+        bullets.add(bullet)
+
 
 class Enemy(GameSprite):
     def update(self):
@@ -54,10 +58,18 @@ class Enemy(GameSprite):
             lost += 1
 
 
+class Bullet(GameSprite):
+    def update(self):
+        self.rect.y += self.speed
+        if self.rect.y <= 0:
+            self.kill()
+
+
 background = pygame.transform.scale(pygame.image.load('galaxy.jpg'), (WIDTH, HEIGHT))
 player = Player('rocket.png', WIDTH / 2 - 80, HEIGHT - 100, 80, 100, 10)
 
 monsters = pygame.sprite.Group()
+bullets = pygame.sprite.Group()
 for i in range(1, 10):
     monster = Enemy('ufo.png', random.randint(20, 460), -40, 80, 50, random.randint(1, 5))
     monsters.add(monster)
@@ -68,6 +80,12 @@ while game:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game = False
+
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                fire_sound.play()
+                player.fire()
+
     if not finish:
         window.blit(background, (0, 0))
 
@@ -81,11 +99,13 @@ while game:
         player.update()
         monsters.update()
         monsters.draw(window)
+        bullets.update()
+        bullets.draw(window)
 
     if lost > 5:
         window.blit(background, (0, 0))
         text_lose = font.render('Ти програв!!!', True, (250, 0, 0))
-        window.blit(text_lose, (WIDTH/2-100, HEIGHT/2))
+        window.blit(text_lose, (WIDTH / 2 - 100, HEIGHT / 2))
         finish = True
 
     pygame.display.update()
