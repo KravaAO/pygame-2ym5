@@ -11,7 +11,7 @@ pygame.display.set_caption('Space shooter')
 clock = pygame.time.Clock()
 pygame.mixer.init()
 pygame.mixer.music.load('space.ogg')
-pygame.mixer.music.set_volume(0.3)
+pygame.mixer.music.set_volume(0.01)
 pygame.mixer.music.play()
 pygame.font.init()
 font = pygame.font.Font(None, 36)
@@ -82,9 +82,22 @@ while game:
             game = False
 
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+            if event.key == pygame.K_SPACE and not finish:
+                fire_sound.set_volume(0.01)
                 fire_sound.play()
                 player.fire()
+
+        elif event.type == pygame.MOUSEBUTTONDOWN and finish:
+            player = Player('rocket.png', WIDTH / 2 - 80, HEIGHT - 100, 80, 100, 10)
+
+            monsters = pygame.sprite.Group()
+            bullets = pygame.sprite.Group()
+            for i in range(1, 10):
+                monster = Enemy('ufo.png', random.randint(20, 460), -40, 80, 50, random.randint(1, 5))
+                monsters.add(monster)
+            score = 0
+            lost = 0
+            finish = False
 
     if not finish:
         window.blit(background, (0, 0))
@@ -102,9 +115,25 @@ while game:
         bullets.update()
         bullets.draw(window)
 
-    if lost > 5:
+    collides = pygame.sprite.groupcollide(monsters, bullets, True, True)
+    for c in collides:
+        score += 1
+        monster = Enemy('ufo.png', random.randint(20, 460), -40, 80, 50, random.randint(1, 5))
+        monsters.add(monster)
+
+    if lost > 10 or pygame.sprite.spritecollide(player, monsters, False):
         window.blit(background, (0, 0))
         text_lose = font.render('Ти програв!!!', True, (250, 0, 0))
+        text = font.render('клікни для рестарту', True, (250, 250, 250))
+        window.blit(text, (290, 320))
+        window.blit(text_lose, (280, 200))
+        finish = True
+
+    if score >= 20:
+        window.blit(background, (0, 0))
+        text_lose = font.render('Ти переміг!!!', True, (100, 250, 0))
+        text = font.render('клікни для рестарту', True, (250, 250, 250))
+        window.blit(text, (250, 320))
         window.blit(text_lose, (WIDTH / 2 - 100, HEIGHT / 2))
         finish = True
 
