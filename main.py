@@ -71,11 +71,13 @@ player = Player('rocket.png', WIDTH / 2 - 80, HEIGHT - 100, 80, 100, 10)
 monsters = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
 for i in range(1, 10):
-    monster = Enemy('ufo.png', random.randint(20, 460), -40, 80, 50, random.randint(1, 5))
+    monster = Enemy('ufo.png', random.randint(20, 460), -40, 80, 50, random.randint(1, 3))
     monsters.add(monster)
 
 game = True
 finish = False
+show_boss = False
+health_boss = 10
 while game:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -118,23 +120,45 @@ while game:
     collides = pygame.sprite.groupcollide(monsters, bullets, True, True)
     for c in collides:
         score += 1
-        monster = Enemy('ufo.png', random.randint(20, 460), -40, 80, 50, random.randint(1, 5))
+        monster = Enemy('ufo.png', random.randint(20, 460), -40, 80, 50, random.randint(1, 3))
         monsters.add(monster)
 
     if lost > 10 or pygame.sprite.spritecollide(player, monsters, False):
+        font1 = pygame.font.Font(None, 60)
         window.blit(background, (0, 0))
-        text_lose = font.render('Ти програв!!!', True, (250, 0, 0))
+        text_lose = font1.render('Ти програв!!!', True, (255, 255, 255))
         text = font.render('клікни для рестарту', True, (250, 250, 250))
-        window.blit(text, (290, 320))
-        window.blit(text_lose, (280, 200))
+        window.blit(text, (230, 270))
+        window.blit(text_lose, (230, 200))
         finish = True
 
-    if score >= 20:
+    '''
+    # поява боса 
+    
+    if score >= 5:
+        show_boss = True
+        boss = Enemy('ufo.png', 240, -300, 240, 180, 1)
+        for monster in monsters:
+            monster.kill()
+        score = 0
+
+    if show_boss:
+        boss.update()
+        boss.reset()
+        if boss.rect.colliderect(bullets):
+            health_boss -= 1
+        if health_boss <= 0:
+            boss.kill()
+    '''
+
+    if score >= 10:
+        font1 = pygame.font.Font(None, 60)
         window.blit(background, (0, 0))
-        text_lose = font.render('Ти переміг!!!', True, (100, 250, 0))
+
+        text_lose = font1.render('Ти переміг!!!', True, (255, 255, 255))
         text = font.render('клікни для рестарту', True, (250, 250, 250))
-        window.blit(text, (250, 320))
-        window.blit(text_lose, (WIDTH / 2 - 100, HEIGHT / 2))
+        window.blit(text, (230, 270))
+        window.blit(text_lose, (230, 200))
         finish = True
 
     pygame.display.update()
